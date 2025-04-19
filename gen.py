@@ -28,3 +28,4 @@ for part in response.candidates[0].content.parts:
         image.save("image.png")
         image.show()
         break
+    
