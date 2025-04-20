@@ -17,18 +17,20 @@ response = client.models.generate_content(
     )
 )
 
-if response.candidates and response.candidates[0].content and hasattr(response.candidates[0].content, "parts"):
-    for part in response.candidates[0].content.parts:
-        if hasattr(part, "text") and part.text:
-            print(part.text)
-        elif hasattr(part, "inline_data") and part.inline_data:
-            image = Image.open(BytesIO(part.inline_data.data))
-            if not path.exists("images"):
-                mkdir("images")
-            chdir("images")
-            image.save("image.png")
-            image.show()
-            break
+if response and response.candidates:
+    content = response.candidates[0].content
+    if content and hasattr(content, 'parts'):
+        for part in content.parts:
+            if getattr(part, 'text', None):
+                print(part.text)
+            elif getattr(part, 'inline_data', None):
+                image = Image.open(BytesIO(part.inline_data.data))
+                if not path.exists("images"):
+                    mkdir("images")
+                chdir("images")
+                image.save(f'{contents}.png')
+                image.show()
+    else:
+        print("No parts in content.")
 else:
-    print("No usable content in response.")
-    
+    print("No candidates returned.")
